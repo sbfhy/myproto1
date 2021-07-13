@@ -1,0 +1,18 @@
+syntax = "proto3";
+package CMD;
+
+option cc_generic_services = true;
+
+message C2G_CreateEntryArg 
+{
+}
+
+message C2G_CreateEntryRes 
+{
+}
+
+service C2G_SceneEntryService
+{
+    rpc C2G_CreateEntry (C2G_CreateEntryArg) returns (C2G_CreateEntryRes);
+}
+

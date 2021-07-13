@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+enum ProtocolNumber                               // 协议号
+{
+  PROTOCOLNUMBER_MIN                  = 0;        // Min
+
+  PROTOCOLNUMBER_MAX                  = 65535;    // Max
+}
+
+message Nonce                                     // 
+{
+  uint32 timestamp                    = 1;
+  uint32 index                        = 2;
+}
+

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package CMD;
+
+option cc_generic_services = true;
+
+message C2G_UserLoginArg 
+{
+}
+
+message C2G_UserLoginRes 
+{
+}
+
+service C2G_UserLoginService
+{
+    rpc C2G_UserLogin (C2G_UserLoginArg) returns (C2G_UserLoginRes);
+}
