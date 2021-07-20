@@ -5,13 +5,16 @@ option cc_generic_services = true;
 
 message C2G_UserLoginArg 
 {
+    uint64 accid = 1;
 }
 
 message C2G_UserLoginRes 
 {
+    bool allow_login = 1;
 }
 
 service C2G_UserLoginService
 {
     rpc C2G_UserLogin (C2G_UserLoginArg) returns (C2G_UserLoginRes);
 }
+
