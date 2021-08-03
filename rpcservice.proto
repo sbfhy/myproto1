@@ -4,7 +4,6 @@ package muduo.net;
 
 import "rpc.proto";
 
-option cc_generic_services = true;
 
 message ListRpcRequest
 {

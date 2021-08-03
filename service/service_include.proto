@@ -1,0 +1,6 @@
+syntax = "proto3";
+package CMD;
+
+message EmptyResponse           // 空的回复，用于RPC单向通信时
+{
+}

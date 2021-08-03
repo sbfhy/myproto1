@@ -1,7 +1,9 @@
 syntax = "proto3";
 package CMD;
 
-option cc_generic_services = true;
+// option cc_generic_services = true;
+
+import "service/service_include.proto";
 
 message C2G_UserLoginArg 
 {

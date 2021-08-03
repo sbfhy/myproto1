@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ENUM;
+
+enum EServiceType
+{
+    option allow_alias = true;
+    SERVICETYPE_MIN                             = 0;
+    C2G_UserLoginService                        = 0;
+    SERVICETYPE_MAX                             = 1;
+}
+

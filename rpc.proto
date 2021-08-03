@@ -3,6 +3,7 @@ syntax = "proto3";
 package muduo.net;
 
 import "google/protobuf/descriptor.proto";
+import "service/service_enum.proto";
 
 extend google.protobuf.MethodOptions
 {
@@ -33,7 +34,7 @@ message RpcMessage
 {
   MessageType type          = 1;  // 
   fixed64 id                = 2;  // 
-  string service            = 3;  // 
+  ENUM.EServiceType service = 3;  // 
   int32 method              = 4;  //
   bytes request             = 5;  //
   bytes response            = 6;  //
