@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package muduo.net;
 
-import "rpc.proto";
+import "message/common/rpc.proto";
 
 
 message ListRpcRequest
