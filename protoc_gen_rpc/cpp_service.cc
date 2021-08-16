@@ -101,24 +101,25 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
     "// implements Service ----------------------------------------------\n"
     "\n"
     "const ::google::protobuf::ServiceDescriptor* GetDescriptor();\n"
+    "const ::google::protobuf::Message& GetRequestPrototype(\n"
+    "                           const ::google::protobuf::MethodDescriptor* method) const;\n"
+    "const ::google::protobuf::Message& GetResponsePrototype(\n"
+    "                           const ::google::protobuf::MethodDescriptor* method) const;\n"
+    "\n"
     "void CallMethod(const ::google::protobuf::MethodDescriptor* method,\n"
     "                const ::google::protobuf::MessagePtr& request,\n"
-    "                const ::google::protobuf::Message* responsePrototype);\n"
-    "\n"
-    "const ::google::protobuf::Message& GetRequestPrototype(\n"
-    "  const ::google::protobuf::MethodDescriptor* method) const;\n"
-    "const ::google::protobuf::Message& GetResponsePrototype(\n"
-    "  const ::google::protobuf::MethodDescriptor* method) const;\n");
+    "                const ::google::protobuf::MessagePtr& response);\n"
+);
 
   // DoneCallback, TimeOut 函数定义
   printer->Print(
     "\n"
     "void DoneCallback(const ::google::protobuf::MethodDescriptor* method,\n"
-    "                 const ::google::protobuf::MessagePtr& request,\n"
-    "                 const ::google::protobuf::Message* responsePrototype);\n"
+    "                  const ::google::protobuf::MessagePtr& request,\n"
+    "                  const ::google::protobuf::MessagePtr& response);\n"
     "\n"
     "void TimeOut(const ::google::protobuf::MethodDescriptor* method,\n"
-    "                 const ::google::protobuf::MessagePtr& request);\n");
+    "             const ::google::protobuf::MessagePtr& request);\n");
 
   printer->Outdent();
   printer->Print(vars_,
@@ -137,6 +138,7 @@ void ServiceGenerator::GenerateStubDefinition(io::Printer* printer) {
   printer->Indent();
 
   printer->Print(vars_,
+    "$classname$_Stub() {} \n"
     "$classname$_Stub(::muduo::net::RpcChannelBase* channel);\n"
     "~$classname$_Stub();\n"
     "\n"
@@ -159,8 +161,10 @@ void ServiceGenerator::GenerateStubDefinition(io::Printer* printer) {
 }
 
 void ServiceGenerator::GenerateMethodSignatures(
-    StubOrNon stub_or_non, io::Printer* printer) {
-  for (int i = 0; i < descriptor_->method_count(); i++) {
+                            StubOrNon stub_or_non, io::Printer* printer) 
+{
+  for (int i = 0; i < descriptor_->method_count(); i++) 
+  {
     const MethodDescriptor* method = descriptor_->method(i);
     std::map<string, string> sub_vars;
     sub_vars["classname"] = descriptor_->name();
@@ -172,14 +176,14 @@ void ServiceGenerator::GenerateMethodSignatures(
 
     printer->Print(sub_vars,
       "$virtual$void $name$(const $input_type$Ptr& request,\n"
-      "                     const $output_type$* responsePrototype);\n");
+      "                     const $output_type$Ptr& response);\n");
     
     if (stub_or_non != STUB)        // Service 
     {
       // DoneCallback
       printer->Print(sub_vars,
         "$virtual$void $name$_DoneCb(const $input_type$Ptr& request,\n"
-        "                     const $output_type$* responsePrototype) {} \n");
+        "                            const $output_type$Ptr& response) {} \n");
       // TimeOut
       printer->Print(sub_vars,
         "$virtual$void $name$_TimeOut(const $input_type$Ptr& request) {} \n"
@@ -234,7 +238,7 @@ void ServiceGenerator::GenerateImplementation(io::Printer* printer) {
   // Generate stub implementation.          // Stub的构造和析构
   printer->Print(vars_,
     "$classname$_Stub::$classname$_Stub(::muduo::net::RpcChannelBase* channel__)\n"
-    "   : channel_(channel__), owns_channel_(false) \n"
+    "    : channel_(channel__), owns_channel_(false) \n"
     "{\n"
     "}\n\n"
 //  "$classname$_Stub::$classname$_Stub(\n"
@@ -250,8 +254,10 @@ void ServiceGenerator::GenerateImplementation(io::Printer* printer) {
   GenerateStubMethods(printer);             // Stub的相关函数实现
 }
 
-void ServiceGenerator::GenerateNotImplementedMethods(io::Printer* printer) {
-  for (int i = 0; i < descriptor_->method_count(); i++) {
+void ServiceGenerator::GenerateNotImplementedMethods(io::Printer* printer) 
+{
+  for (int i = 0; i < descriptor_->method_count(); i++) 
+  {
     const MethodDescriptor* method = descriptor_->method(i);
     std::map<string, string> sub_vars;
     sub_vars["classname"] = descriptor_->name();
@@ -262,7 +268,7 @@ void ServiceGenerator::GenerateNotImplementedMethods(io::Printer* printer) {
 
     printer->Print(sub_vars,
       "void $classname$::$name$(const $input_type$Ptr&,\n"
-      "                         const $output_type$*) {\n"
+      "                         const $output_type$Ptr&) {\n"
    // "  controller->SetFailed(\"Method $name$() not implemented.\");\n"
       "  assert(0);\n"
       "}\n"
@@ -274,7 +280,7 @@ void ServiceGenerator::GenerateCallMethod(io::Printer* printer) {
   printer->Print(vars_,
     "void $classname$::CallMethod(const ::google::protobuf::MethodDescriptor* method,\n"
     "                             const ::google::protobuf::MessagePtr& request,\n"
-    "                             const ::google::protobuf::Message* responsePrototype) {\n"
+    "                             const ::google::protobuf::MessagePtr& response) {\n"
     "  GOOGLE_DCHECK_EQ(method->service(), $classname$_descriptor_);\n"
     "  switch(method->index()) {\n");
 
@@ -286,12 +292,11 @@ void ServiceGenerator::GenerateCallMethod(io::Printer* printer) {
     sub_vars["input_type"] = ClassName(method->input_type(), true);
     sub_vars["output_type"] = ClassName(method->output_type(), true);
 
-    // Note:  down_cast does not work here because it only works on pointers,
-    //   not references.
+    // Note:  down_cast does not work here because it only works on pointers, not references.
     printer->Print(sub_vars,
       "    case $index$:\n"
-      "      $name$(::google::protobuf::down_pointer_cast< $input_type$>(request),\n"
-      "             ::google::protobuf::down_cast<const $output_type$*>(responsePrototype));\n"
+      "      $name$(::google::protobuf::down_pointer_cast<$input_type$>(request),\n"
+      "             ::google::protobuf::down_pointer_cast<$output_type$>(response));\n"
       "      break;\n");
   }
 
@@ -308,8 +313,8 @@ void ServiceGenerator::GenerateDoneCallback(io::Printer* printer)
 {
   printer->Print(vars_,
     "void $classname$::DoneCallback(const ::google::protobuf::MethodDescriptor* method,\n"
-    "                             const ::google::protobuf::MessagePtr& request,\n"
-    "                             const ::google::protobuf::Message* responsePrototype) {\n"
+    "                               const ::google::protobuf::MessagePtr& request,\n"
+    "                               const ::google::protobuf::MessagePtr& response) {\n"
     "  GOOGLE_DCHECK_EQ(method->service(), $classname$_descriptor_);\n"
     "  switch(method->index()) {\n");
 
@@ -324,8 +329,8 @@ void ServiceGenerator::GenerateDoneCallback(io::Printer* printer)
     // Note:  down_cast does not work here because it only works on pointers, not references.
     printer->Print(sub_vars,
       "    case $index$:\n"
-      "      $name$_DoneCb(::google::protobuf::down_pointer_cast< $input_type$>(request),\n"
-      "             ::google::protobuf::down_cast<const $output_type$*>(responsePrototype));\n"
+      "      $name$_DoneCb(::google::protobuf::down_pointer_cast<$input_type$>(request),\n"
+      "                    ::google::protobuf::down_pointer_cast<$output_type$>(response));\n"
       "      break;\n");
   }
 
@@ -342,7 +347,7 @@ void ServiceGenerator::GenerateTimeOut(io::Printer* printer)
 {
   printer->Print(vars_,
     "void $classname$::TimeOut(const ::google::protobuf::MethodDescriptor* method,\n"
-    "                             const ::google::protobuf::MessagePtr& request) {\n"
+    "                          const ::google::protobuf::MessagePtr& request) {\n"
     "  GOOGLE_DCHECK_EQ(method->service(), $classname$_descriptor_);\n"
     "  switch(method->index()) {\n");
 
@@ -357,7 +362,7 @@ void ServiceGenerator::GenerateTimeOut(io::Printer* printer)
     // Note:  down_cast does not work here because it only works on pointers, not references.
     printer->Print(sub_vars,
       "    case $index$:\n"
-      "      $name$_TimeOut(::google::protobuf::down_pointer_cast< $input_type$>(request));\n"
+      "      $name$_TimeOut(::google::protobuf::down_pointer_cast<$input_type$>(request));\n"
       "      break;\n");
   }
 
@@ -408,8 +413,10 @@ void ServiceGenerator::GenerateGetPrototype(RequestOrResponse which,
     "\n");
 }
 
-void ServiceGenerator::GenerateStubMethods(io::Printer* printer) {
-  for (int i = 0; i < descriptor_->method_count(); i++) {
+void ServiceGenerator::GenerateStubMethods(io::Printer* printer) 
+{
+  for (int i = 0; i < descriptor_->method_count(); i++) 
+  {
     const MethodDescriptor* method = descriptor_->method(i);
     std::map<string, string> sub_vars;
     sub_vars["classname"] = descriptor_->name();
@@ -421,9 +428,11 @@ void ServiceGenerator::GenerateStubMethods(io::Printer* printer) {
 
     printer->Print(sub_vars,
       "void $classname$_Stub::$name$(const $input_type$Ptr& request,\n"
-      "                              const $output_type$*) {\n"
+      "                              const $output_type$Ptr& response) \n"
+      "{\n"
       "  channel_->CallMethod(descriptor()->method($index$),\n"
-      "                       request, &$output_type$::default_instance());\n"
+      "                       request, \n"
+      "                       response);\n"
       "}\n"
       "\n");
   }

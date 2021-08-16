@@ -1,0 +1,16 @@
+syntax = "proto3";
+package CMD;
+
+message G2C_EnterSceneArg
+{
+}
+
+message G2C_EnterSceneRes
+{
+}
+
+service G2C_SceneService
+{
+    rpc G2C_EnterScene (G2C_EnterSceneArg) returns (G2C_EnterSceneRes);
+}
+

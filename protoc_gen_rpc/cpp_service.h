@@ -32,8 +32,7 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#ifndef MUDUO_PROTORPC2_CPP_SERVICE_H
-#define MUDUO_PROTORPC2_CPP_SERVICE_H
+#pragma once
 
 #include <map>
 #include <string>
@@ -124,4 +123,3 @@ class ServiceGenerator {
 }  // namespace protobuf
 
 }  // namespace google
-#endif  // MUDUO_PROTORPC2_CPP_SERVICE_H
