@@ -109,9 +109,9 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
     "void CallMethod(const ::google::protobuf::MethodDescriptor* method,\n"
     "                const ::google::protobuf::MessagePtr& request,\n"
     "                const ::google::protobuf::MessagePtr& response);\n"
-);
+    );
 
-  // DoneCallback, TimeOut 函数定义
+  // DoneCallback, TimeOut, DelayResponse 函数定义
   printer->Print(
     "\n"
     "void DoneCallback(const ::google::protobuf::MethodDescriptor* method,\n"
@@ -119,7 +119,12 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
     "                  const ::google::protobuf::MessagePtr& response);\n"
     "\n"
     "void TimeOut(const ::google::protobuf::MethodDescriptor* method,\n"
-    "             const ::google::protobuf::MessagePtr& request);\n");
+    "             const ::google::protobuf::MessagePtr& request);\n"
+    "\n"
+    "void DelayResponse(const ::google::protobuf::MethodDescriptor* method,\n"
+    "                   const ::google::protobuf::MessagePtr& request,\n"
+    "                   const ::google::protobuf::MessagePtr& response);\n"
+    );
 
   printer->Outdent();
   printer->Print(vars_,
@@ -187,6 +192,11 @@ void ServiceGenerator::GenerateMethodSignatures(
       // TimeOut
       printer->Print(sub_vars,
         "$virtual$void $name$_TimeOut(const $input_type$Ptr& request) {} \n"
+        );
+      // DelayResponse
+      printer->Print(sub_vars,
+        "$virtual$void $name$_DelayResponse(const $input_type$Ptr& request, \n"
+        "                                   const $output_type$Ptr& response) {} \n"
         "\n");
     }
   }
@@ -231,6 +241,7 @@ void ServiceGenerator::GenerateImplementation(io::Printer* printer) {
   GenerateCallMethod(printer);
   GenerateDoneCallback(printer);
   GenerateTimeOut(printer);
+  GenerateDelayResponse(printer);
   GenerateGetPrototype(MSGTYPE_REQUEST, printer);
   GenerateGetPrototype(MSGTYPE_RESPONSE, printer);
 
@@ -331,6 +342,40 @@ void ServiceGenerator::GenerateDoneCallback(io::Printer* printer)
       "    case $index$:\n"
       "      $name$_DoneCb(::google::protobuf::down_pointer_cast<$input_type$>(request),\n"
       "                    ::google::protobuf::down_pointer_cast<$output_type$>(response));\n"
+      "      break;\n");
+  }
+
+  printer->Print(vars_,
+    "    default:\n"
+    "      GOOGLE_LOG(FATAL) << \"Bad method index; this should never happen.\";\n"
+    "      break;\n"
+    "  }\n"
+    "}\n"
+    "\n");
+}
+
+void ServiceGenerator::GenerateDelayResponse(io::Printer* printer)
+{
+  printer->Print(vars_,
+    "void $classname$::DelayResponse(const ::google::protobuf::MethodDescriptor* method,\n"
+    "                                const ::google::protobuf::MessagePtr& request,\n"
+    "                                const ::google::protobuf::MessagePtr& response) {\n"
+    "  GOOGLE_DCHECK_EQ(method->service(), $classname$_descriptor_);\n"
+    "  switch(method->index()) {\n");
+
+  for (int i = 0; i < descriptor_->method_count(); i++) {
+    const MethodDescriptor* method = descriptor_->method(i);
+    std::map<string, string> sub_vars;
+    sub_vars["name"] = method->name();
+    sub_vars["index"] = SimpleItoa(i);
+    sub_vars["input_type"] = ClassName(method->input_type(), true);
+    sub_vars["output_type"] = ClassName(method->output_type(), true);
+
+    // Note:  down_cast does not work here because it only works on pointers, not references.
+    printer->Print(sub_vars,
+      "    case $index$:\n"
+      "      $name$_DelayResponse(::google::protobuf::down_pointer_cast<$input_type$>(request),\n"
+      "                           ::google::protobuf::down_pointer_cast<$output_type$>(response));\n"
       "      break;\n");
   }
 

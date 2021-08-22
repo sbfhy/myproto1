@@ -104,6 +104,8 @@ class ServiceGenerator {
   void GenerateDoneCallback(io::Printer* printer);
   // Service::TimeOut 实现
   void GenerateTimeOut(io::Printer* printer);
+  // Service::DelayResponse 实现
+  void GenerateDelayResponse(io::Printer* printer);
 
   // Generate the Get{Request,Response}Prototype() methods.     
   void GenerateGetPrototype(RequestOrResponse which, io::Printer* printer);
