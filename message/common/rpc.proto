@@ -35,8 +35,11 @@ message RpcMessage
   MessageType type          = 1;  // 
   fixed64 id                = 2;  // 
   ENUM.EServiceType service = 3;  // 
-  int32 method              = 4;  //
-  bytes request             = 5;  //
-  bytes response            = 6;  //
-  ErrorCode error           = 7;  //
+  ENUM.EServerType from     = 4;  // 
+  ENUM.EServerType to       = 5;  // 
+  uint64 accid              = 6;  //
+  int32 method              = 7;  //
+  bytes request             = 8;  //
+  bytes response            = 9;  //
+  ErrorCode error           = 10;  //
 }

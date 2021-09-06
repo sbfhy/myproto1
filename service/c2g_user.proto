@@ -15,7 +15,7 @@ message C2G_UserLoginRes
     bool allow_login = 1;
 }
 
-service C2G_UserLoginService
+service C2G_UserService
 {
     rpc C2G_UserLogin (C2G_UserLoginArg) returns (C2G_UserLoginRes);
 }

@@ -1,0 +1,20 @@
+syntax = "proto3";
+package CMD;
+
+import "service/service_include.proto";
+
+message C2A_UserLoginArg 
+{
+    uint64 accid = 1;
+}
+
+message C2A_UserLoginRes 
+{
+    bool allow_login = 1;
+}
+
+service C2A_UserService
+{
+    rpc C2A_UserLogin (C2A_UserLoginArg) returns (C2A_UserLoginRes);
+}
+

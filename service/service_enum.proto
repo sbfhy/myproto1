@@ -3,8 +3,6 @@ package ENUM;
 
 enum EServiceType
 {
-    // option allow_alias = true;
-
     // 必须按顺序，Service + 1 = Stub
 
     SERVICETYPE_MIN                             = 0;
@@ -12,31 +10,48 @@ enum EServiceType
     // ==============================================
 
     C2G_MIN                                     = 1;            // C2G_MIN
-
-    C2G_UserLoginService                        = 2;
-    C2G_UserLoginService_Stub                   = 3;
+    C2G_UserService                             = 2;
+    C2G_UserService_Stub                        = 3;
     C2G_SceneEntryService                       = 4;
     C2G_SceneEntryService_Stub                  = 5;
-
     C2G_MAX                                     = 240;          // C2G_MAX
 
     // ==============================================
 
     G2C_MIN                                     = 241;          // G2C_MIN
-
     G2C_SceneService                            = 242;
     G2C_SceneService_Stub                       = 243;
-
     G2C_MAX                                     = 480;          // G2C_MAX
 
     // ==============================================
 
-    // test    ======================================
-    SudokuService                               = 501;
-    SudokuService_Stub                          = 502;
+    C2A_MIN                                     = 481;          // C2A_MIN
+    C2A_UserService                             = 482;
+    C2A_UserService_Stub                        = 483;
+    C2A_MAX                                     = 520;          // C2A_MAX
+
+    // ==============================================
+
+
+    // ==============================================           // test    
+
+    SudokuService                               = 1001;
+    SudokuService_Stub                          = 1002;
 
     // ==============================================
 
     SERVICETYPE_MAX                             = 1024;
 }
 
+enum EServerType
+{
+    ESERVERTYPE_MIN                             = 0;
+    
+    ESERVERTYPE_GATESERVER                      = 1;
+    ESERVERTYPE_GAMESERVER                      = 2;
+    ESERVERTYPE_DBSERVER                        = 3;
+    ESERVERTYPE_LOGINSERVER                     = 4;
+    ESERVERTYPE_CLIENT                          = 5;
+
+    ESERVERTYPE_MAX                             = 6;
+}
