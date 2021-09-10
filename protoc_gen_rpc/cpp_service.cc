@@ -100,6 +100,9 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
     "\n"
     "// implements Service ----------------------------------------------\n"
     "\n"
+    "inline std::shared_ptr<muduo::net::RpcChannelBase> GetRpcChannel() const { return channel_; }\n"
+    "void SetRpcChannel(std::shared_ptr<muduo::net::RpcChannelBase> pChannel) { channel_ = pChannel; }\n"
+    "\n"
     "const ::google::protobuf::ServiceDescriptor* GetDescriptor();\n"
     "const ::google::protobuf::Message& GetRequestPrototype(\n"
     "                           const ::google::protobuf::MethodDescriptor* method) const;\n"
@@ -129,6 +132,9 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
   printer->Outdent();
   printer->Print(vars_,
     "\n"
+    " protected:\n"
+    "  std::shared_ptr<muduo::net::RpcChannelBase> channel_;\n"
+    "\n"
     " private:\n"
     "  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS($classname$);\n"
     "};\n"
@@ -144,10 +150,8 @@ void ServiceGenerator::GenerateStubDefinition(io::Printer* printer) {
 
   printer->Print(vars_,
     "$classname$_Stub() {} \n"
-    "$classname$_Stub(::muduo::net::RpcChannelBase* channel);\n"
+    // "$classname$_Stub(::muduo::net::RpcChannelBase* channel);\n"
     "~$classname$_Stub();\n"
-    "\n"
-    "inline ::muduo::net::RpcChannelBase* channel() { return channel_; }\n"
     "\n"
     "// implements $classname$ ------------------------------------------\n"
     "\n");
@@ -158,8 +162,7 @@ void ServiceGenerator::GenerateStubDefinition(io::Printer* printer) {
   printer->Print(vars_,
     "\n"
     " private:\n"
-    "  muduo::net::RpcChannelBase* channel_;\n"
-    "  bool owns_channel_;\n"
+    "  bool owns_channel_ {false};\n"
     "  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS($classname$_Stub);\n"
     "};\n"
     "\n");
@@ -248,10 +251,11 @@ void ServiceGenerator::GenerateImplementation(io::Printer* printer) {
 
   // Generate stub implementation.          // Stub的构造和析构
   printer->Print(vars_,
-    "$classname$_Stub::$classname$_Stub(::muduo::net::RpcChannelBase* channel__)\n"
-    "    : channel_(channel__), owns_channel_(false) \n"
-    "{\n"
-    "}\n\n"
+    // "$classname$_Stub::$classname$_Stub(::muduo::net::RpcChannelBase* channel__)\n"
+    // "    : owns_channel_(false) \n"
+    // "{\n"
+    // "   channel_ = channel__; \n"
+    // "}\n\n"
 //  "$classname$_Stub::$classname$_Stub(\n"
 //  "    ::google::protobuf::RpcChannel* channel__,\n"
 //  "    ::google::protobuf::Service::ChannelOwnership ownership)\n"

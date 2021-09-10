@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package muduo.net;
+package CMD;
 
 import "message/common/rpc.proto";
 

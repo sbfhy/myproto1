@@ -1,15 +1,15 @@
 syntax = "proto3";
 
-package muduo.net;
+package CMD;
 
 import "google/protobuf/descriptor.proto";
 import "service/service_enum.proto";
 
-extend google.protobuf.MethodOptions
-{
-  bool idempotent = 1111;
-  bool noreturn = 1112;
-}
+//extend google.protobuf.MethodOptions
+//{
+//  bool idempotent = 1111;
+//  bool noreturn = 1112;
+//}
 
 enum MessageType
 {
@@ -32,14 +32,14 @@ enum ErrorCode
 
 message RpcMessage
 {
-  MessageType type          = 1;  // 
-  fixed64 id                = 2;  // 
-  ENUM.EServiceType service = 3;  // 
-  ENUM.EServerType from     = 4;  // 
-  ENUM.EServerType to       = 5;  // 
-  uint64 accid              = 6;  //
-  int32 method              = 7;  //
-  bytes request             = 8;  //
-  bytes response            = 9;  //
-  ErrorCode error           = 10;  //
+  MessageType type                      = 1;        // 
+  fixed64 id                            = 2;        // 
+  ENUM.EServiceType service             = 3;        // 
+  ENUM.EServerType from                 = 4;        // 
+  ENUM.EServerType to                   = 5;        // 
+  uint64 accid                          = 6;        //
+  int32 method                          = 7;        //
+  ErrorCode error                       = 8;        //
+  bytes request                         = 9;        //
+  bytes response                        = 10;       //
 }
