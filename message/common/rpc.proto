@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package CMD;
 
-import "google/protobuf/descriptor.proto";
+//import "google/protobuf/descriptor.proto";
 import "service/service_enum.proto";
 
 //extend google.protobuf.MethodOptions
