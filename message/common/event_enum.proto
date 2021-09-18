@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package ENUM;
+
+enum EEventTypeGlobal               // 全局事件消息
+{
+    EG_EVENT_TYPE_MIN                               = 0;
+
+    EG_EVENT_TYPE_SIGN_UP                           = 1;    // 注册
+    EG_EVENT_TYPE_SIGN_IN                           = 2;    // 登录
+    EG_EVENT_TYPE_SIGN_OUT                          = 3;    // 退出
+
+    EG_EVENT_TYPE_MAX                               = 4;
+}
+
+enum EEventTypeScene                // 场景范围事件消息
+{
+    ES_EVENT_TYPE_MIN                               = 0;
+    ES_EVENT_TYPE_MAX                               = 1;
+}

@@ -3,18 +3,18 @@ package CMD;
 
 //import "service/service_include.proto";
 
-message C2A_UserLoginArg 
+message C2A_UserSignInArg 
 {
     uint64 accid = 1;
 }
 
-message C2A_UserLoginRes 
+message C2A_UserSignInRes 
 {
-    bool allow_login = 1;
+    bool allow_sign_in = 1;
 }
 
 service C2A_UserService
 {
-    rpc C2A_UserLogin (C2A_UserLoginArg) returns (C2A_UserLoginRes);
+    rpc C2A_UserSignIn (C2A_UserSignInArg) returns (C2A_UserSignInRes);
 }
 
