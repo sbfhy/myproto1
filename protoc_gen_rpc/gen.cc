@@ -116,6 +116,7 @@ class RpcGenerator : public CodeGenerator
         printer.Print("typedef     ::std::shared_ptr<$classname$>     $classname$Ptr;\n",
                       "classname", ClassName(file->message_type(i), false));
       }
+      printer.Print("typedef     ::std::shared_ptr<class EmptyResponse>   EmptyResponsePtr;\n"); // typedef EmptyResponsePtr
 
       // Generate service definitions.                // 定义
       for (int i = 0; i < file->service_count(); i++)

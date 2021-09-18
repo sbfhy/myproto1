@@ -1,0 +1,15 @@
+syntax = "proto3";
+package CMD;
+
+import "service/service_include.proto";
+
+message A2G_UserSignInArg 
+{
+    uint64 accid = 1;
+}
+
+service A2G_UserService
+{
+    rpc A2G_UserSignIn (A2G_UserSignInArg) returns (EmptyResponse);
+}
+
