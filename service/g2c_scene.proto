@@ -3,6 +3,7 @@ package CMD;
 
 message G2C_EnterSceneArg
 {
+    string str = 1;
 }
 
 message G2C_EnterSceneRes

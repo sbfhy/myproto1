@@ -8,8 +8,19 @@ message A2G_UserSignInArg
     uint64 accid = 1;
 }
 
+message A2G_GateNotifyGameArg
+{
+}
+
+message A2G_UserSignOutArg 
+{
+    uint64 accid = 1;
+}
+
 service A2G_UserService
 {
-    rpc A2G_UserSignIn (A2G_UserSignInArg) returns (EmptyResponse);
+    rpc  A2G_GateNotifyGame     (A2G_GateNotifyGameArg)     returns (EmptyResponse);        // gate连上game后，告诉game是哪个RpcChannel
+    rpc  A2G_UserSignIn         (A2G_UserSignInArg)         returns (EmptyResponse);        // 用户登录
+    rpc  A2G_UserSignOut        (A2G_UserSignOutArg)        returns (EmptyResponse);        // 用户登出
 }
 
