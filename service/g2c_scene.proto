@@ -1,17 +1,15 @@
 syntax = "proto3";
 package CMD;
 
+import "service/service_include.proto";
+
 message G2C_EnterSceneArg
 {
-    string str = 1;
-}
-
-message G2C_EnterSceneRes
-{
+    int32 mapid = 1;
 }
 
 service G2C_SceneService
 {
-    rpc G2C_EnterScene (G2C_EnterSceneArg) returns (G2C_EnterSceneRes);
+    rpc G2C_EnterScene (G2C_EnterSceneArg) returns (EmptyResponse);
 }
 
