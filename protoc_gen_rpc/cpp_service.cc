@@ -100,9 +100,6 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
     "\n"
     "// implements Service ----------------------------------------------\n"
     "\n"
-    "inline std::shared_ptr<muduo::net::RpcChannelBase> GetRpcChannel() const { return channel_; }\n"
-    "void SetRpcChannel(std::shared_ptr<muduo::net::RpcChannelBase> pChannel) { channel_ = pChannel; }\n"
-    "\n"
     "const ::google::protobuf::ServiceDescriptor* GetDescriptor();\n"
     "const ::google::protobuf::Message& GetRequestPrototype(\n"
     "                           const ::google::protobuf::MethodDescriptor* method) const;\n"
@@ -111,7 +108,8 @@ void ServiceGenerator::GenerateInterface(io::Printer* printer) {
     "\n"
     "void CallMethod(const ::google::protobuf::MethodDescriptor* method,\n"
     "                const ::google::protobuf::MessagePtr& request,\n"
-    "                const ::google::protobuf::MessagePtr& response);\n"
+    "                const ::google::protobuf::MessagePtr& response,\n"
+    "                void* args);\n"
     );
 
   // DoneCallback, TimeOut, DelayResponse 函数定义
@@ -184,7 +182,8 @@ void ServiceGenerator::GenerateMethodSignatures(
 
     printer->Print(sub_vars,
       "$virtual$void $name$(const $input_type$Ptr& request,\n"
-      "                     const $output_type$Ptr& response);\n");
+      "                     const $output_type$Ptr& response,\n"
+      "                     void* args);\n");
     
     if (stub_or_non != STUB)        // Service 
     {
@@ -283,7 +282,8 @@ void ServiceGenerator::GenerateNotImplementedMethods(io::Printer* printer)
 
     printer->Print(sub_vars,
       "void $classname$::$name$(const $input_type$Ptr&,\n"
-      "                         const $output_type$Ptr&) {\n"
+      "                         const $output_type$Ptr&,\n"
+      "                         void* args) {\n"
    // "  controller->SetFailed(\"Method $name$() not implemented.\");\n"
       "  assert(0);\n"
       "}\n"
@@ -295,7 +295,8 @@ void ServiceGenerator::GenerateCallMethod(io::Printer* printer) {
   printer->Print(vars_,
     "void $classname$::CallMethod(const ::google::protobuf::MethodDescriptor* method,\n"
     "                             const ::google::protobuf::MessagePtr& request,\n"
-    "                             const ::google::protobuf::MessagePtr& response) {\n"
+    "                             const ::google::protobuf::MessagePtr& response,\n"
+    "                             void* args) {\n"
     "  GOOGLE_DCHECK_EQ(method->service(), $classname$_descriptor_);\n"
     "  switch(method->index()) {\n");
 
@@ -311,7 +312,8 @@ void ServiceGenerator::GenerateCallMethod(io::Printer* printer) {
     printer->Print(sub_vars,
       "    case $index$:\n"
       "      $name$(::google::protobuf::down_pointer_cast<$input_type$>(request),\n"
-      "             ::google::protobuf::down_pointer_cast<$output_type$>(response));\n"
+      "             ::google::protobuf::down_pointer_cast<$output_type$>(response),"
+      "             args);\n"
       "      break;\n");
   }
 
@@ -477,11 +479,13 @@ void ServiceGenerator::GenerateStubMethods(io::Printer* printer)
 
     printer->Print(sub_vars,
       "void $classname$_Stub::$name$(const $input_type$Ptr& request,\n"
-      "                              const $output_type$Ptr& response) \n"
+      "                              const $output_type$Ptr& response,\n"
+      "                              void* args) \n"
       "{\n"
       "  channel_->CallMethod(descriptor()->method($index$),\n"
       "                       request, \n"
-      "                       response);\n"
+      "                       response,\n"
+      "                       args);\n"
       "}\n"
       "\n");
   }

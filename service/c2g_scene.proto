@@ -1,27 +1,15 @@
 syntax = "proto3";
 package CMD;
 
-message C2G_CreateEntryArg 
+import "service/service_include.proto";
+
+message C2G_NotifyLoadedSceneArg
 {
+    uint32 mapid = 1;
 }
 
-message C2G_CreateEntryRes 
+service C2G_SceneService
 {
-}
-
-message C2G_EnterSceneArg
-{
-
-}
-
-message C2G_EnterSceneRes
-{
-    
-}
-
-service C2G_SceneEntryService
-{
-    rpc C2G_CreateEntry (C2G_CreateEntryArg) returns (C2G_CreateEntryRes);
-    rpc C2G_EnterScene (C2G_EnterSceneArg) returns (C2G_EnterSceneRes);
+    rpc C2G_NotifyLoadedScene (C2G_NotifyLoadedSceneArg) returns (EmptyResponse);
 }
 
