@@ -9,7 +9,7 @@ enum EServiceType
 
     C2G_MIN                                     = 1;            // C2G_MIN
     C2G_UserService                             = 2;
-    C2G_SceneEntryService                       = 3;
+    C2G_SceneService                            = 3;
     C2G_MAX                                     = 240;          // C2G_MAX
 
     // ==============================================
