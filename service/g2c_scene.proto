@@ -8,8 +8,14 @@ message G2C_EnterSceneArg
     int32 mapid = 1;
 }
 
+message G2C_CreatePlayerPawnArg
+{
+    uint64 accid = 1;
+}
+
 service G2C_SceneService
 {
     rpc G2C_EnterScene (G2C_EnterSceneArg) returns (EmptyResponse);
+    rpc G2C_CreatePlayerPawn (G2C_CreatePlayerPawnArg) returns (EmptyResponse);
 }
 
