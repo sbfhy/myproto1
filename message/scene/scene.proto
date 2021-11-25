@@ -1,0 +1,12 @@
+syntax = "proto3";
+package CMD;
+
+import "message/scene/pos.proto";
+
+message MoveStateCmd                // 移动同步信息
+{
+    uint64          guid                     = 1;
+    int32           rotate                   = 2;
+    int32           speed                    = 3;
+    Pos             curpos                   = 4;
+}

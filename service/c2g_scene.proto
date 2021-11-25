@@ -2,14 +2,21 @@ syntax = "proto3";
 package CMD;
 
 import "service/service_include.proto";
+import "message/scene/scene.proto";
 
-message C2G_NotifyLoadedSceneArg
+message C2G_NotifyLoadedSceneArg            // 通知后端，前端导入地图完成
 {
-    uint32 mapid = 1;
+    uint32              mapid                       = 1;
 }
+
+message C2G_MoveStateArg                    // 移动同步
+{
+    MoveStateCmd        cmd                         = 1;
+}
+
 
 service C2G_SceneService
 {
     rpc C2G_NotifyLoadedScene (C2G_NotifyLoadedSceneArg) returns (EmptyResponse);
+    rpc C2G_MoveState (C2G_MoveStateArg) returns (EmptyResponse);
 }
-
